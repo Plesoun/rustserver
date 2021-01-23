@@ -1,7 +1,7 @@
 fn main() {
 
     let get = Method::GET;
-    let delete = Method::DELETE("look, I contain data!".to_string());
+    let delete = Method::DELETE;
     let post = Method::POST;
     let put = Method::PUT;
 
@@ -29,15 +29,15 @@ impl Server {
 
 struct Request {
     path: String,
-    query_string: String,
+    query_string: Option<String>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
     // use enums here instead of string
     method: Method,
 }
 
 // will be represented as ints in memory
 enum Method {
-    GET, //can specify the actual int representation in memory, we can also use them to contain data
-    DELETE(String), //we can also use them to contain data
+    GET,
+    DELETE,
     POST,
     PUT,
     HEAD,
