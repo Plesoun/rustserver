@@ -19,12 +19,11 @@ impl Server {
         loop {
             let result = listener.accept();
 
-            if res.is_err() {
+            if result.is_err() {
                 continue;
             }
 
-            let (stream, addr) = res.unwrap();
+            let (stream, addr) = result.unwrap();
         }
         }
     }
-}
