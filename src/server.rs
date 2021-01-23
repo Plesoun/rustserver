@@ -1,4 +1,6 @@
 use std::net::TcpListener;
+use std::io::Read;
+
 
 pub struct Server {
     addr: String,
@@ -19,8 +21,18 @@ impl Server {
         loop {
 
             match listener.accept() {
-                Ok((stream, _)) => { //assign tuple, dont care about address "_"
-                    println!("OK")
+                Ok((mut stream, _)) => { //assign tuple, dont care about address "_"
+                    println!("OK");
+                    let mut buffer = [0; 1024]; //assign a buffer for an array
+
+
+                    match stream.read(&mut buffer) { // buffer may be too small here
+                        Ok(_) => {
+                            println!("Recieved a request {}", String::from_utf8_lossy(&buffer));
+                        },
+
+                        Err(e) => println!("Error while reading the TCP stream {}", e)
+                    }
                 },
                 Err(e) => println!("Error in TCP Connection {}", e)
                 // "_ => " here means catch all
