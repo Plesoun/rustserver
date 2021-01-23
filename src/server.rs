@@ -16,10 +16,15 @@ impl Server {
         // returns result enum
         let listener = TcpListener::bind(&self.addr).unwrap();
 
-        'outer: loop {
-            loop {
-                break 'outer;
+        loop {
+            let result = listener.accept();
+
+            if res.is_err() {
+                continue;
             }
+
+            let (stream, addr) = res.unwrap();
+        }
         }
     }
 }
