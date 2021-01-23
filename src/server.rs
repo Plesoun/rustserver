@@ -17,13 +17,15 @@ impl Server {
         let listener = TcpListener::bind(&self.addr).unwrap();
 
         loop {
-            let result = listener.accept();
 
-            if result.is_err() {
-                continue;
+            match listener.accept() {
+                Ok((stream, _)) => { //assign tuple, dont care about address "_"
+                    println!("OK")
+                },
+                Err(e) => println!("Error in TCP Connection {}", e)
+                // "_ => " here means catch all
+                // match works also on strings and others
             }
-
-            let (stream, addr) = result.unwrap();
         }
         }
     }
