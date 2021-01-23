@@ -1,5 +1,8 @@
+use std::str;
 use super::method::Method;
 use std::convert::TryFrom;
+use std::error::Error;
+use std::fmt::{Result as FmtResult, Display, Formatter, Debug};
 
 pub struct Request {
     path: String,
@@ -8,35 +11,54 @@ pub struct Request {
     method: Method,
 }
 
-impl Request {
-    fn from_byte_array(buf: &[u8]) -> Result<Self, String> {}
-}
-
 impl TryFrom<&[u8]> for Request {
-    type Error = String;
-    fn try_from(buf: &[u8]) -> Result<Self, Self::Error> {
-        let string = String::from("aaaa");
-        string.encrypt();
+    type Error = ParseError;
+
+    // example to parse "GET /search?name=abc&sort=1 HTTP/1.1"
+    fn try_from(buff: &[u8]) -> Result<Self, Self::Error> {
+        //match str::from_utf8(buff).or(Err(ParseError::InvalidEncoding)) {
+        //    Ok(request) => {},
+        //    Err(e) => return Err(e),
+        //}
+
+        //or simply like so:
+        let request = str::from_utf8(buff).or(Err(ParseError::InvalidEncoding))?;
+        // the only difference is, when the error type is not matched to our ParseError, it tries to convert the error type
+
         unimplemented!()
     }
 }
 
-// Extending functionality of an existing modules
-
-trait Encrypt {
-    fn encrypt(&self) -> Self {
-        unimplemented!();
+impl Display for ParseError {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{}", self.message())
     }
 }
 
-impl Encrypt for String {
-    fn encrypt(&self) -> Self {
-        unimplemented!()
+impl Debug for ParseError {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
+        write!(f, "{}", self.message())
     }
 }
 
-impl Encrypt for &[u8] {
-    fn encrypt(&self) -> Self {
-        unimplemented!()
+pub enum ParseError {
+    InvalidRequest,
+    InvalidEncoding,
+    InvalidProtocol,
+    InvalidMethod,
+}
+
+impl ParseError {
+    fn message(&self) -> &str {
+        match self {
+            Self::InvalidRequest => "Invalid Request",
+            Self::InvalidEncoding => "InvalidEncoding",
+            Self::InvalidProtocol => "InvalidProtocol",
+            Self::InvalidMethod => "InvalidMethod",
+        }
     }
+}
+
+impl Error for ParseError {
+
 }
