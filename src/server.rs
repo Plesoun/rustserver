@@ -24,7 +24,7 @@ impl Server {
                 },
                 Err(e) => println!("Error in TCP Connection {}", e)
                 // "_ => " here means catch all
-                // match works also on strings and others
+                // match works also on strings and others, we can use | to match multiple patterns
             }
         }
         }
