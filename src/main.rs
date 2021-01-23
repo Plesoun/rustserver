@@ -1,9 +1,10 @@
 fn main() {
 
     let get = Method::GET;
-    let get = Method::DELETE;
-    let get = Method::POST;
-    let get = Method::PUT;
+    let delete = Method::DELETE("look, I contain data!".to_string());
+    let post = Method::POST;
+    let put = Method::PUT;
+
 
     let server = Server::new("127.0.0.1:8080".to_string()); //need to convert to_string, was a literal
     server.run();
@@ -35,8 +36,8 @@ struct Request {
 
 // will be represented as ints in memory
 enum Method {
-    GET,
-    DELETE,
+    GET, //can specify the actual int representation in memory, we can also use them to contain data
+    DELETE(String), //we can also use them to contain data
     POST,
     PUT,
     HEAD,
