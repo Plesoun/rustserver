@@ -5,18 +5,18 @@ use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::str;
 use std::str::Utf8Error;
 
-pub struct Request {
-    path: &str,
-    query_string: Option<&str>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
+pub struct Request<'buffer> {
+    path: &'buffer str,
+    query_string: Option<&'buffer str>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
     // use enums here instead of string
     method: Method,
 }
 
-impl TryFrom<&[u8]> for Request {
+impl<'buffer> TryFrom<&'buffer [u8]> for Request<'buffer> {
     type Error = ParseError;
 
     // example to parse "GET /search?name=abc&sort=1 HTTP/1.1"
-    fn try_from(buff: &[u8]) -> Result<Self, Self::Error> {
+    fn try_from(buff: &'buffer [u8]) -> Result<Self, Self::Error> {
         //match str::from_utf8(buff).or(Err(ParseError::InvalidEncoding)) {
         //    Ok(request) => {},
         //    Err(e) => return Err(e),
