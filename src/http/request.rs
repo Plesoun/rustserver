@@ -35,13 +35,39 @@ impl TryFrom<&[u8]> for Request {
 
         // or we can do
         let (method, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
-        let (path, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
+        let (mut path, request) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
         let (protocol, _) = get_next_word(request).ok_or(ParseError::InvalidRequest)?;
 
         if protocol != "HTTP/1.1" {
             return Err(ParseError::InvalidProtocol);
         }
+        let mut query_string = None;
         let method: Method = method.parse()?;
+
+        // We need to split the query string on ?. We can do it like so:
+        // match path.find('?') {
+        //     Some(i) => {
+        //         query_string = Some(&path[i + 1..]);
+        //         path = &path[..i];
+        //     }
+        //     None => {}
+        // }
+
+        // or we can do it like so
+        // let q = path.find("?");
+        // if q.is_some() {
+        //     let i = q.unwrap();
+        //     query_string = Some(&path[i + 1..]);
+        //     path = &path[..i];
+        // }
+
+        // or finally we can use the if let statement
+        if let Some(i) = path.find("?") {
+            query_string = Some(&path[i + 1..]);
+            path = &path[..i];
+        }
+
+
         unimplemented!()
     }
 }
