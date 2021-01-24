@@ -6,8 +6,8 @@ use std::str;
 use std::str::Utf8Error;
 
 pub struct Request {
-    path: String,
-    query_string: Option<String>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
+    path: &str,
+    query_string: Option<&str>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
     // use enums here instead of string
     method: Method,
 }
@@ -63,13 +63,13 @@ impl TryFrom<&[u8]> for Request {
 
         // or finally we can use the if let statement
         if let Some(i) = path.find("?") {
-            query_string = Some(path[i + 1..].to_string());
+            query_string = Some(&path[i + 1..]);
             path = &path[..i];
         }
 
 
         Ok(Self {
-            path: path.to_string(),
+            path,
             query_string,
             method,
         })
