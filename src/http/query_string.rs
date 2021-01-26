@@ -20,7 +20,16 @@ impl<'buffer> QueryString<'buffer> {
 impl<'buffer> From<&'buffer str> for QueryString<'buffer> {
     fn from(s: &'buffer str) -> Self {
         let mut data = HashMap::new();
-        QueryString { data }
 
+
+        for sub_string in s.split("&") {
+            let mut key = sub_string;
+            let mut value = "";
+            if let Some(i) = s.find("=") {
+                key = &sub_string[..i];
+                value = &sub_string[i + 1..];
+            }
+        }
+        QueryString { data }
     }
 }
