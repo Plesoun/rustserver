@@ -1,4 +1,5 @@
 use super::method::{Method, MethodError};
+use super::QueryString;
 use std::convert::TryFrom;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
@@ -7,7 +8,7 @@ use std::str::Utf8Error;
 
 pub struct Request<'buffer> {
     path: &'buffer str,
-    query_string: Option<&'buffer str>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
+    query_string: Option<QueryString<'buffer>>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
     // use enums here instead of string
     method: Method,
 }
@@ -63,7 +64,7 @@ impl<'buffer> TryFrom<&'buffer [u8]> for Request<'buffer> {
 
         // or finally we can use the if let statement
         if let Some(i) = path.find("?") {
-            query_string = Some(&path[i + 1..]);
+            query_string = Some(QueryString::from(&path[i + 1..]));
             path = &path[..i];
         }
 
