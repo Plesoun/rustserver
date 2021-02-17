@@ -1,5 +1,5 @@
 use std::net::TcpListener;
-use std::io::Read;
+use std::io::{Read, Write};
 use crate::http::Request;
 use std::convert::TryFrom;
 use std::convert::TryInto;
@@ -28,13 +28,16 @@ impl Server {
                     println!("OK");
                     let mut buffer = [0; 1024]; //assign a buffer for an array
 
-
                     match stream.read(&mut buffer) { // buffer may be too small here
                         Ok(_) => {
                             println!("Recieved a request {}", String::from_utf8_lossy(&buffer));
 
                             match Request::try_from(&buffer[..]) {
-                                Ok(_) => {}
+                                Ok(request) => {
+                                    // dbg!(buffer);
+                                    dbg!(request);
+									write!(stream, "HTTP/1.1 404 Not Found\r\n\r\n");
+                                }
 
                                 Err(e) => {
                                     println!("Error while parsing request {}", e);

@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 // will be represented as ints in memory
+#[derive(Debug)]
 pub enum Method {
     GET,
     DELETE,

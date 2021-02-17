@@ -6,6 +6,7 @@ use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 use std::str;
 use std::str::Utf8Error;
 
+#[derive(Debug)]
 pub struct Request<'buffer> {
     path: &'buffer str,
     query_string: Option<QueryString<'buffer>>, //can be None or some, it is a way to express absence of a value in a type-safe way (no no pointer exceptions)
@@ -17,14 +18,14 @@ impl<'buffer> TryFrom<&'buffer [u8]> for Request<'buffer> {
     type Error = ParseError;
 
     // example to parse "GET /search?name=abc&sort=1 HTTP/1.1"
-    fn try_from(buff: &'buffer [u8]) -> Result<Self, Self::Error> {
+    fn try_from(buffer: &'buffer [u8]) -> Result<Request<'buffer>, Self::Error> {
         //match str::from_utf8(buff).or(Err(ParseError::InvalidEncoding)) {
         //    Ok(request) => {},
         //    Err(e) => return Err(e),
         //}
 
         //or simply like so:
-        let request = str::from_utf8(buff)?;
+        let request = str::from_utf8(buffer)?;
         // the only difference is, when the error type is not matched to our ParseError, it tries to convert the error type
 
 
@@ -63,7 +64,7 @@ impl<'buffer> TryFrom<&'buffer [u8]> for Request<'buffer> {
         // }
 
         // or finally we can use the if let statement
-        if let Some(i) = path.find("?") {
+        if let Some(i) = path.find('?') {
             query_string = Some(QueryString::from(&path[i + 1..]));
             path = &path[..i];
         }
