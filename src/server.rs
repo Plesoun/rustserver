@@ -36,7 +36,7 @@ impl Server {
                                 Ok(request) => {
                                     // dbg!(buffer);
                                     dbg!(request);
-                                    let response = Response::new(StatusCode::NotFound, None);
+                                    let response = Response::new(StatusCode::Ok, Some("<h1> Phew!! ".to_string()));
                                     write!(stream, "{}", response);
                                 }
                                 Err(e) => {
