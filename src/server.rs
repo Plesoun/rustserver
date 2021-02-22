@@ -37,7 +37,7 @@ impl Server {
                                     // dbg!(buffer);
                                     dbg!(request);
                                     let response = Response::new(StatusCode::Ok, Some("<h1> Phew!! ".to_string()));
-                                    write!(stream, "{}", response);
+                                    response.send(&mut stream);
                                 }
                                 Err(e) => {
                                     println!("Error while parsing request {}", e);
