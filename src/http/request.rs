@@ -92,7 +92,7 @@ fn get_next_word(request: &str) -> Option<(&str, &str)> {
 
     for (index, value) in request.chars().enumerate() {
         if value == ' ' || value == '\r' {
-            Some((&request[..index], &request[index + 1..]));
+            return Some((&request[..index], &request[index + 1..]));
         }
     }
     None
